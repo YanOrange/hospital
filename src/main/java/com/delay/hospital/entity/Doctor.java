@@ -7,27 +7,33 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * @Author 闫金柱
+ * @create 2021-3-23 10:59
+ */
 @Entity
+@Table(name="t_doctor")
 @Data
-@Table(name = "t_user")
-public class User {
+public class Doctor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//自增长
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
-    private String sex;
-    private String age;
-    private String birthDay;//生日
-    private String phone;
-    private String idCard;
-    private String account;
-    private String passWord;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="dept_id")
+    private Dept dept;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="hospital_id")
+    private Hospital hospital;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
-    private Integer status;//3管理员 1客户端用户
+
 
 
 }

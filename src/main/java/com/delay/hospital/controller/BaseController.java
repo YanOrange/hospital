@@ -26,5 +26,16 @@ public class BaseController {
         return user;
 
     }
+    public User getUser2() {
+        User user = null;
+        try {
+            user = (User) request.getSession().getAttribute("user2");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return user;
+
+    }
 
 }

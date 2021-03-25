@@ -23,20 +23,35 @@
 <div class="layui-fluid">
     <div class="layui-row">
         <form class="layui-form">
+            <input type="hidden" name="id" value="${doctor.id}">
             <div class="layui-form-item">
                 <label for="name" class="layui-form-label">
-                    <span class="x-red">*</span>类型名称
+                    <span class="x-red">*</span>医院名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="username" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="${doctor.hospital.name!''}" readonly>
+                </div>
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>门诊名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="username" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="${doctor.dept.name!''}" readonly>
+                </div>
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>医生名称
                 </label>
                 <div class="layui-input-inline">
                     <input type="text" id="username" name="name" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" value="">
+                           autocomplete="off" class="layui-input" value="${doctor.name!''}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label for="L_repass" class="layui-form-label">
                 </label>
                 <button class="layui-btn" lay-filter="edit" lay-submit="">
-                    确认新增
+                    确认修改
                 </button>
             </div>
         </form>
@@ -57,17 +72,23 @@
                 function (data) {
                     console.log(data);
                     //发异步，把数据提交给后端
+                    var hospital = data.field.hospital;
+                    data.field['hospital'] = {};
+                    data.field.hospital['id'] = hospital;
+                    var dept = data.field.dept;
+                    data.field['dept'] = {};
+                    data.field.dept['id'] = dept;
                     var s = JSON.stringify(data.field);
                     console.log(s)
                     $.ajax({
-                        url: '/type/add',
+                        url: '/hospital/editDoctorInfo',
                         data: s,
                         contentType: "application/json;charset=UTF-8",
                         type: 'post',
                         dataType: 'json',
                         success: function (res) {
                             if (res.success) {
-                                layer.alert('类型新增成功', {
+                                layer.alert('信息修改成功', {
                                         icon: 6
                                     },
                                     function () {

@@ -51,15 +51,6 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label for="name" class="layui-form-label">
-                    <span class="x-red">*</span>笔名
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" id="username" name="penName" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" value="">
-                </div>
-            </div>
-            <div class="layui-form-item">
                 <label class="layui-form-label"><span class="x-red">*</span>性别</label>
                 <div class="layui-input-inline">
                     <input type="radio" name="sex" value="男" title="男" checked>
@@ -81,24 +72,6 @@
                 </label>
                 <div class="layui-input-inline">
                     <input type="text" name="phone" required="" lay-verify="phone"
-                           autocomplete="off" class="layui-input" value="">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>邮箱
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" name="email" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" value="">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>联系地址
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" name="address" required="" lay-verify="required"
                            autocomplete="off" class="layui-input" value="">
                 </div>
             </div>
@@ -166,7 +139,7 @@
                                             // 可以对父窗口进行刷新
                                             xadmin.father_reload();
                                         } catch (e) {
-                                            location.href = '/page/login'
+                                            history.back(-1);
                                         }
                                     });
                             } else {

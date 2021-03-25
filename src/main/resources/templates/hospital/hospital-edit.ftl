@@ -23,14 +23,14 @@
 <div class="layui-fluid">
     <div class="layui-row">
         <form class="layui-form">
-            <input type="hidden" name="id" value="${type.id}">
+            <input type="hidden" name="id" value="${hospital.id}">
             <div class="layui-form-item">
                 <label for="name" class="layui-form-label">
-                    <span class="x-red">*</span>类型名称
+                    <span class="x-red">*</span>医院名称
                 </label>
                 <div class="layui-input-inline">
                     <input type="text" id="username" name="name" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" value="${type.name!''}">
+                           autocomplete="off" class="layui-input" value="${hospital.name!''}">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -61,7 +61,7 @@
                     var s = JSON.stringify(data.field);
                     console.log(s)
                     $.ajax({
-                        url: '/type/editInfo',
+                        url: '/hospital/editHospitalInfo',
                         data: s,
                         contentType: "application/json;charset=UTF-8",
                         type: 'post',

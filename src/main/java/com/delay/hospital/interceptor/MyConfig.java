@@ -60,13 +60,21 @@ public class MyConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/page/home")
                 .excludePathPatterns("/page/clientPerson")
                 .excludePathPatterns("/page/clientLogin")
-                .excludePathPatterns("/page/myFav");
+                .excludePathPatterns("/page/myFav")
+                .excludePathPatterns("/page/toDept")
+                .excludePathPatterns("/page/toDoctor")
+                .excludePathPatterns("/page/toOrder")
+                .excludePathPatterns("/page/myOrder");
 
         addInterceptor2.addPathPatterns(
                 "/page/home",
                 "/page/findById",
                 "/page/clientPerson",
-                "/page/myFav"
+                "/page/myFav",
+                "/page/toDept",
+                "/page/toDoctor",
+                "/page/toOrder",
+                "/page/myOrder"
         ).excludePathPatterns(
                 "/login/**",
                 "/page/login",

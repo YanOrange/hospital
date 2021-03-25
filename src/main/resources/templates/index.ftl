@@ -78,32 +78,34 @@
 <div class="left-nav">
     <div id="side-nav">
         <ul id="nav">
-            <#if user.status==0||user.status==3>
                 <li>
                     <a href="javascript:;">
-                        <i class="iconfont left-nav-li" lay-tips="主编模块">&#xe6b8;</i>
-                        <cite>主编模块</cite>
+                        <i class="iconfont left-nav-li" lay-tips="基础模块">&#xe6b8;</i>
+                        <cite>基础模块</cite>
                         <i class="iconfont nav_right">&#xe697;</i></a>
                     <ul class="sub-menu">
                         <li>
-                            <a onclick="xadmin.add_tab('个人信息','/page/person')">
+                            <a onclick="xadmin.add_tab('医院管理','/page/hospitalList')">
                                 <i class="iconfont">&#xe6a7;</i>
-                                <cite>个人信息</cite></a>
+                                <cite>医院管理</cite></a>
                         </li>
                         <li>
-                            <a onclick="xadmin.add_tab('发布新闻','/page/editor')">
+                            <a onclick="xadmin.add_tab('诊室管理','/page/deptList')">
                                 <i class="iconfont">&#xe6a7;</i>
-                                <cite>发布新闻</cite></a>
+                                <cite>诊室管理</cite></a>
                         </li>
                         <li>
-                            <a onclick="xadmin.add_tab('新闻管理','/page/essayList')">
+                            <a onclick="xadmin.add_tab('医生管理','/page/doctorList')">
                                 <i class="iconfont">&#xe6a7;</i>
-                                <cite>新闻管理</cite></a>
+                                <cite>医生管理</cite></a>
+                        </li>
+                        <li>
+                            <a onclick="xadmin.add_tab('挂号单管理','/page/toOrderList')">
+                                <i class="iconfont">&#xe6a7;</i>
+                                <cite>挂号单管理</cite></a>
                         </li>
                     </ul>
                 </li>
-            </#if>
-            <#if user.status==3||user.status==4>
                 <li>
                     <a href="javascript:;">
                         <i class="iconfont left-nav-li" lay-tips="管理员模块">&#xe726;</i>
@@ -111,33 +113,12 @@
                         <i class="iconfont nav_right">&#xe697;</i></a>
                     <ul class="sub-menu">
                         <li>
-                            <a onclick="xadmin.add_tab('待审核新闻','/page/masterEssayList')">
-                                <i class="iconfont">&#xe6a7;</i>
-                                <cite>待审核新闻</cite></a>
-                        </li>
-                        <li>
-                            <a onclick="xadmin.add_tab('过审新闻','/page/masterEssayPassList')">
-                                <i class="iconfont">&#xe6a7;</i>
-                                <cite>过审新闻</cite></a>
-                        </li>
-                        <li>
-                            <a onclick="xadmin.add_tab('类型管理','/page/typeList')">
-                                <i class="iconfont">&#xe6a7;</i>
-                                <cite>类型管理</cite></a>
-                        </li>
-                        <li>
-                            <a onclick="xadmin.add_tab('主编管理','/page/toGetMaster')">
-                                <i class="iconfont">&#xe6a7;</i>
-                                <cite>主编管理</cite></a>
-                        </li>
-                        <li>
                             <a onclick="xadmin.add_tab('管理员管理','/page/toAdmin')">
                                 <i class="iconfont">&#xe6a7;</i>
                                 <cite>管理员管理</cite></a>
                         </li>
                     </ul>
                 </li>
-            </#if>
         </ul>
     </div>
 </div>

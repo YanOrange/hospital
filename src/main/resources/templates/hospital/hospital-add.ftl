@@ -23,69 +23,20 @@
 <div class="layui-fluid">
     <div class="layui-row">
         <form class="layui-form">
-            <input type="hidden" name="id" value="${author.id}">
             <div class="layui-form-item">
                 <label for="name" class="layui-form-label">
-                    <span class="x-red">*</span>真实姓名
+                    <span class="x-red">*</span>医院名称
                 </label>
                 <div class="layui-input-inline">
                     <input type="text" id="username" name="name" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" value="${author.name!''}">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label"><span class="x-red">*</span>性别</label>
-                <div class="layui-input-inline">
-                    <#if author.sex == '男'>
-                        <input type="radio" name="sex" value="男" title="男" checked>
-                        <input type="radio" name="sex" value="女" title="女">
-                    <#elseif author.sex == '女'>
-                        <input type="radio" name="sex" value="男" title="男">
-                        <input type="radio" name="sex" value="女" title="女" checked>
-                    </#if>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>年龄
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" name="age" required="" lay-verify="required"
-                           autocomplete="off" class="layui-input" value="${author.age!''}">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>联系方式
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" name="phone" required="" lay-verify="phone"
-                           autocomplete="off" class="layui-input" value="${author.phone!''}">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>出生日期
-                </label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" autocomplete="off" placeholder="出生日期" name="birthDay" id="start"
-                           lay-verify="required" value="${author.birthDay!''}">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label for="L_email" class="layui-form-label">
-                    <span class="x-red">*</span>身份证号
-                </label>
-                <div class="layui-input-inline">
-                    <input type="text" name="idCard" required="" lay-verify="identity"
-                           autocomplete="off" class="layui-input" value="${author.idCard!''}">
+                           autocomplete="off" class="layui-input" value="">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label for="L_repass" class="layui-form-label">
                 </label>
                 <button class="layui-btn" lay-filter="edit" lay-submit="">
-                    确认修改
+                    确认新增
                 </button>
             </div>
         </form>
@@ -109,14 +60,14 @@
                     var s = JSON.stringify(data.field);
                     console.log(s)
                     $.ajax({
-                        url: '/user/editInfo',
+                        url: '/hospital/addHospital',
                         data: s,
                         contentType: "application/json;charset=UTF-8",
                         type: 'post',
                         dataType: 'json',
                         success: function (res) {
                             if (res.success) {
-                                layer.alert('信息修改成功', {
+                                layer.alert('类型医院成功', {
                                         icon: 6
                                     },
                                     function () {

@@ -62,11 +62,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="layui-card-header">
-                    <button class="layui-btn layui-btn-danger" onclick="delAll()">
-                        <i class="layui-icon"></i>批量删除
-                    </button>
-                </div>
+
                 <div class="layui-card-body ">
                     <table id="LAY_table_user" class="layui-table">
 
@@ -112,7 +108,7 @@
         layer.confirm('确认要永久删除吗？', function (index) {
             //发异步删除数据
             $.ajax({
-                url: '/essay/delete',
+                url: '/order/delete',
                 data: JSON.stringify(arr),
                 type: 'post',
                 dataType: 'json',
@@ -142,7 +138,7 @@
             function () {
                 //捉到所有被选中的，发异步进行删除
                 $.ajax({
-                    url: '/essay/delete',
+                    url: '/order/delete',
                     data: JSON.stringify(ids),
                     dataType: 'json',
                     type: 'post',
@@ -166,58 +162,6 @@
             });
     }
 
-    //通过
-    function pass(id) {
-        layer.confirm('确认通过嘛？', {
-            btn: ['确认', '取消'] //按钮
-        }, function () {
-            $.ajax({
-                url: '/essay/setState',
-                data: {
-                    essayId: id,
-                    state: 1
-                },
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        layer.msg('审核通过，稿件已发布', {icon: 1});
-                        xadmin.father_reload();
-                    } else {
-                        layer.msg(res.msg, {icon: 2});
-                    }
-
-                }
-            })
-
-        }, function () {
-
-        });
-    }
-
-    function refuse(id) {
-        //prompt层
-        layer.prompt({title: '打回意见', formType: 2}, function (text, index) {
-            $.ajax({
-                url: '/essay/refuse',
-                data: {
-                    essayId: id,
-                    remark: text
-                },
-                type: 'post',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        layer.close(index);
-                        layer.msg('已打回<br>提交意见：' + text);
-                    } else {
-                        layer.close(index);
-                        layer.msglayer.msg(res.msg, {icon: 2});
-                    }
-                }
-            })
-
-        });
-    }
 
 </script>
 <script th:inline="none">
@@ -234,31 +178,21 @@
                 var table = layui.table;
                 table.render({
                     id: "checkboxTable",
-                    url: '/essay/getEssayByState?state=3',
+                    url: '/order/findAll',
                     elem: '#LAY_table_user',
                     page: true,
                     cols: [[
                         {checkbox: true},
                         {field: 'id', title: 'ID', width: 80},
-                        {field: 'title', title: '标题', sort: true, width: 120},
-                        {field: 'type', width: 80, title: '类型', sort: true},
-                        {
-                            field: 'author',
-                            width: 80,
-                            title: '作者',
-                            sort: true,
-                            templet: '<div>{{d.author.penName}}</div>'
-                        },
-                        {field: 'createTime', title: '创建时间', sort: true, width: 150},
-                        {field: 'updateTime', title: '最后一次更新时间', sort: true, width: 150},
-                        {field: 'publishTime', title: '发布时间', sort: true, width: 150},
-                        {
-                            field: 'state',
-                            title: '状态',
-                            sort: true,
-                            width: 120,
-                            templet: '<div>{{d.state==0?"审核中":(d.state==1?"发布":(d.state==2?"打回":(d.state==3?"弃用":"未知")))}}</div>'
-                        },
+                        {field: 'orderNo', title: '订单号', sort: true, width: 120},
+                        {field: 'doTime', width: 80, title: '就诊时间', sort: true},
+                        {field: 'msg', width: 300, title: '预约结果', sort: true},
+                        {field: 'hospital', title: '医院', sort: true, width: 150,templet:'<div>{{d.hospital.name}}</div>'},
+                        {field: 'dept', title: '门诊', sort: true, width: 150,templet:'<div>{{d.dept.name}}</div>'},
+                        {field: 'doctor', title: '医生', sort: true, width: 150,templet:'<div>{{d.doctor.name}}</div>'},
+                        {field: 'user', title: '预约用户', sort: true, width: 120,templet:'<div>{{d.user.name}}</div>'},
+                        {field: 'phone', title: '预留手机号', sort: true, width: 120},
+                        {field: 'createTime', title: '创建时间', sort: true, width: 120},
                         {toolbar: '#barTeacher', title: '操作', width: 120}
 
                     ]]
@@ -283,20 +217,8 @@
 
 </script>
 <script type="text/html" id="barTeacher">
-    <a title="查看" onclick="xadmin.open('查看稿件','/essay/checkEssay?essayId={{d.id}}',800,600);" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6ac;</i>
-    </a>
-    <#--<a title="下载"  onclick="down({{d.id}});" href="javascript:;">-->
-    <#--<i class="layui-icon iconfont">&#xe714;</i>-->
-    <#--</a>-->
-    <#--<a title="移除" onclick="member_del(this,{{d.id}})" href="javascript:;">-->
-    <#--<i class="layui-icon">&#xe640;</i>-->
-    <#--</a>-->
-    <a title="恢复" onclick="pass({{d.id}})" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6ad;</i>
-    </a>
-    <a title="永久删除" onclick="member_del(this,{{d.id}})" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6b7;</i>
+    <a title="移除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+        <i class="layui-icon">&#xe640;</i>
     </a>
 </script>
 

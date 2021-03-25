@@ -17,10 +17,15 @@
     <link rel="stylesheet" href="../css/common.css">
     <style>
         .content {
-            display: flex;
-            justify-content: left;
             margin-top: 0.88rem;
-            padding:0 1.5rem;
+            padding:0 1rem;
+        }
+
+        .content div{
+            padding:0.1rem 0;
+        }
+        .content input{
+            border:1px solid #D0D0D0;
         }
 
         .newsClass {
@@ -68,21 +73,20 @@
     <header class="global-header">
         <div class="center-area">医院预约挂号</div>
     </header>
-    <div class="search-box">
-        <input type="text" placeholder="请输入医院名称" id="search-key">
-        <button class="search-btn">搜索</button>
-    </div>
     <div class="content">
-        <ul class="newsClass" id="newsContent">
-
-        </ul>
+        <div>预约医院:<span id="hospitalName"></span></div>
+        <div>预约门诊:<span id="deptName"></span></div>
+        <div>预约专家:<span id="doctorName"></span></div>
+        <div>预约时间:<input type="date" id="date"></div>
+        <div>预留手机号:<input type="text" id="phone"></div>
     </div>
     <div class="bottom">
-        <div class="tab" onclick="location.href='/page/clientPerson'">
-            <span>个人中心</span>
+        <div class="tab">
+            <span id="sub-btn">提交预约</span>
         </div>
     </div>
 </div>
+<input type="hidden" value="${doctorId!''}" id="doctorId">
 </body>
 <script type="text/javascript" src="../js/jquery.js"></script>
 <script type="text/javascript">
@@ -92,17 +96,19 @@
     })
 
     function initHospital() {
+        var doctorId = $('#doctorId').val();
         $.ajax({
-            url: '/hospital/findAllHospital',
+            url: '/hospital/getInfoByDoctorId',
+            data:{
+                doctorId:doctorId
+            },
             dataType: 'json',
             success: function (res) {
                 if (res.success) {
                     var data = res.data;
-                    var html = '';
-                    $.each(data, function (index, arr) {
-                        html += '<li data-id="' + arr.id + '">' + arr.name + '</li>';
-                    })
-                    $('.newsClass').html(html);
+                    $('#hospitalName').html(data.hospital.name);
+                    $('#deptName').html(data.dept.name);
+                    $('#doctorName').html(data.doctor.name);
                 } else {
                     alert(res.msg)
                 }
@@ -110,34 +116,38 @@
         })
     }
 
-    $('.search-btn').on('click',function(){
-        var key = $('#search-key').val()
+    $('#sub-btn').on('click',function(){
+        var doctorId = $('#doctorId').val();
+        var date = $('#date').val();
+        var phone = $('#phone').val();
+        if(!(doctorId&&date&&phone)){
+            alert("请完善参数");
+            return false;
+        }
         $.ajax({
-            url: '/hospital/findAllHospitalByName',
+            url:'/order/createOrder',
             data:{
-                name:key
+                doctorId:doctorId,
+                date:date,
+                phone:phone
             },
-            dataType: 'json',
-            success: function (res) {
-                if (res.success) {
-                    var data = res.data;
-                    var html = '';
-                    $.each(data, function (index, arr) {
-                        html += '<li data-id="' + arr.id + '">' + arr.name + '</li>';
-                    })
-                    $('.newsClass').html(html);
-                } else {
+            dataType:'json',
+            success:function(res){
+                if(res.success){
+                    if(res.data.status==1){
+                        alert("预约成功，请在预约单中查看详情")
+                        location.href="/page/clientPerson";
+                    }else if(res.data.status==2){
+                        alert("预约失败，请在预约单中查看详情")
+                        location.href="/page/clientPerson";
+                    }
+                }else{
                     alert(res.msg)
                 }
             }
         })
     })
 
-    $('#newsContent').on('click', 'li', function () {
-        console.log('2')
-        var hosId = $(this).data('id');
-        location.href = "/page/toDept?hospitalId=" + hosId;
-    })
 
 </script>
 

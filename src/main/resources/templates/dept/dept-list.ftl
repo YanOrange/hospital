@@ -46,26 +46,21 @@
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-body ">
-
-                    <form class="layui-form layui-col-space5">
-                        <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start">
-                        </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end"></div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="username" placeholder="请输入用户名" autocomplete="off"
-                                   class="layui-input"></div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
-                                <i class="layui-icon">&#xe615;</i></button>
+                    <form class="layui-form layui-col-md12  layui-form-pane">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选择医院</label>
+                            <div class="layui-input-inline" style="width:300px;">
+                                <select name="channelId" id="hospital" lay-filter="change">
+                                    <option>请选择</option>
+                                </select>
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="layui-card-header">
-                    <button class="layui-btn layui-btn-danger" onclick="xadmin.open('新增','/page/addType',800,600)"
+                    <button class="layui-btn layui-btn-danger" onclick="xadmin.open('新增','/page/addDept',800,600)"
                             href="javascript:;">
-                        <i class="layui-icon iconfont">&#xe6b9;</i>新增类型
+                        <i class="layui-icon iconfont">&#xe6b9;</i>新增门诊
                     </button>
                     <button class="layui-btn layui-btn-danger" onclick="delAll()">
                         <i class="layui-icon"></i>批量删除
@@ -101,10 +96,40 @@
         });
 </script>
 <script>
-    layui.use('table', function () {
+    layui.use(['table','form'], function () {
         var table = layui.table;
+        var form = layui.form;
+
+        getAllHospital();
+        /**
+         * 监听下拉框变化
+         * */
+        form.on('select(change)', function(data){
+            getAllEssay(data.value);
+        });
+
+        function getAllHospital(){
+            $.ajax({
+                url: '/hospital/findAllHospital',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.success) {
+                        var html = '<option value="" >请选择医院</option>';
+                        $.each(res.data, function (i, val) {
+                            html += '<option value="' + val.id + '">' + val.name + '</option>';
+                        })
+                        $('#hospital').html(html);
+                        form.render('select');
+                    } else {
+                        layer.msg(res.msg, {icon: 2, time: 2000});
+                    }
+                }
+            })
+        }
 
     });
+
+
 </script>
 <script>
     /*操作数据*/
@@ -115,7 +140,7 @@
         layer.confirm('确认要永久删除吗？', function (index) {
             //发异步删除数据
             $.ajax({
-                url: '/type/delete',
+                url: '/hospital/deleteDept',
                 data: JSON.stringify(arr),
                 type: 'post',
                 dataType: 'json',
@@ -145,7 +170,7 @@
             function () {
                 //捉到所有被选中的，发异步进行删除
                 $.ajax({
-                    url: '/type/delete',
+                    url: '/hospital/deleteDept',
                     data: JSON.stringify(ids),
                     dataType: 'json',
                     type: 'post',
@@ -174,23 +199,24 @@
     /*数据查询*/
 
     $(function () {
-        getAllEssay();
+        // getAllEssay();
     })
 
     /*获取全部文章*/
-    function getAllEssay() {
+    function getAllEssay(hospitalId) {
         layui.use('table',
             function () {
                 var table = layui.table;
                 table.render({
                     id: "checkboxTable",
-                    url: '/type/getAll',
+                    url: '/hospital/findAllDept?hospitalId='+hospitalId,
                     elem: '#LAY_table_user',
                     page: true,
                     cols: [[
                         {checkbox: true},
                         {field: 'id', title: 'ID', width: 80},
-                        {field: 'name', title: '类型名', sort: true, width: 120},
+                        {field: 'name', title: '门诊名', sort: true, width: 120},
+                        {field: 'hospital', title: '医院名', sort: true, width: 120,templet:'<div>{{d.hospital.name}}</div>'},
                         {field: 'createTime', title: '创建时间', sort: true, width: 150},
                         {toolbar: '#barTeacher', title: '操作', width: 120}
                     ]]
@@ -215,7 +241,7 @@
 
 </script>
 <script type="text/html" id="barTeacher">
-    <a title="编辑" onclick="xadmin.open('编辑','/type/toEditType?typeId={{d.id}}',800,600)" href="javascript:;">
+    <a title="编辑" onclick="xadmin.open('编辑','/hospital/toEditDept?deptId={{d.id}}',800,600)" href="javascript:;">
         <i class="layui-icon">&#xe642;</i>
     </a>
     <a title="移除" onclick="member_del(this,{{d.id}})" href="javascript:;">

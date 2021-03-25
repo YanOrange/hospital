@@ -46,23 +46,32 @@
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-body ">
-
-                    <form class="layui-form layui-col-space5">
-                        <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="开始日" name="start" id="start">
+                    <form class="layui-form layui-col-md12  layui-form-pane">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选择医院</label>
+                            <div class="layui-input-inline" style="width:300px;">
+                                <select name="hospital" id="hospital" lay-filter="change">
+                                    <option>请选择</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input class="layui-input" autocomplete="off" placeholder="截止日" name="end" id="end"></div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <input type="text" name="username" placeholder="请输入用户名" autocomplete="off"
-                                   class="layui-input"></div>
-                        <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
-                                <i class="layui-icon">&#xe615;</i></button>
+                    </form>
+                    <form class="layui-form layui-col-md12  layui-form-pane">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">选择门诊</label>
+                            <div class="layui-input-inline" style="width:300px;">
+                                <select name="dept" id="dept" lay-filter="change2">
+                                    <option>请选择</option>
+                                </select>
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-danger" onclick="xadmin.open('新增','/page/addDoctor',800,600)"
+                            href="javascript:;">
+                        <i class="layui-icon iconfont">&#xe6b9;</i>新增医生
+                    </button>
                     <button class="layui-btn layui-btn-danger" onclick="delAll()">
                         <i class="layui-icon"></i>批量删除
                     </button>
@@ -97,22 +106,76 @@
         });
 </script>
 <script>
-    layui.use('table', function () {
+    layui.use(['table', 'form'], function () {
         var table = layui.table;
+        var form = layui.form;
+
+        getAllHospital();
+
+        function getAllHospital() {
+            $.ajax({
+                url: '/hospital/findAllHospital',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.success) {
+                        var html = '<option value="" >请选择医院</option>';
+                        $.each(res.data, function (i, val) {
+                            html += '<option value="' + val.id + '">' + val.name + '</option>';
+                        })
+                        $('#hospital').html(html);
+                        form.render('select');
+                    } else {
+                        layer.msg(res.msg, {icon: 2, time: 2000});
+                    }
+                }
+            })
+        }
+
+        /**
+         * 监听下拉框变化
+         * */
+        form.on('select(change)', function (data) {
+            $.ajax({
+                url: '/hospital/findAllDept',
+                data: {
+                    hospitalId: data.value
+                },
+                dataType: 'json',
+                success: function (res) {
+                    if (res.success) {
+                        var html = '<option value="" >请选择门诊</option>';
+                        $.each(res.data, function (i, val) {
+                            html += '<option value="' + val.id + '">' + val.name + '</option>';
+                        })
+                        $('#dept').html(html);
+                        form.render('select');
+                    } else {
+                        layer.msg(res.msg, {icon: 2, time: 2000});
+                    }
+                }
+            })
+        });
+
+        /**
+         * 监听下拉框变化
+         * */
+        form.on('select(change2)', function (data) {
+            var hospitalId = $('#hospital').val();
+            getAllEssay(hospitalId, data.value);
+        });
 
     });
 </script>
 <script>
     /*操作数据*/
-
-    /*用户-删除*/
+    /*类型-删除*/
     function member_del(obj, id) {
         var arr = [];
         arr.push(id);
-        layer.confirm('确认要删除吗？', function (index) {
+        layer.confirm('确认要永久删除吗？', function (index) {
             //发异步删除数据
             $.ajax({
-                url: '/essay/delete',
+                url: '/hospital/deleteDept',
                 data: JSON.stringify(arr),
                 type: 'post',
                 dataType: 'json',
@@ -142,7 +205,7 @@
             function () {
                 //捉到所有被选中的，发异步进行删除
                 $.ajax({
-                    url: '/essay/delete',
+                    url: '/hospital/deleteDept',
                     data: JSON.stringify(ids),
                     dataType: 'json',
                     type: 'post',
@@ -166,95 +229,44 @@
             });
     }
 
-    //通过
-    function pass(id) {
-        layer.confirm('确认通过嘛？', {
-            btn: ['确认', '取消'] //按钮
-        }, function () {
-            $.ajax({
-                url: '/essay/setState',
-                data: {
-                    essayId: id,
-                    state: 1
-                },
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        layer.msg('审核通过，稿件已发布', {icon: 1});
-                        xadmin.father_reload();
-                    } else {
-                        layer.msg(res.msg, {icon: 2});
-                    }
-
-                }
-            })
-
-        }, function () {
-
-        });
-    }
-
-    function refuse(id) {
-        //prompt层
-        layer.prompt({title: '打回意见', formType: 2}, function (text, index) {
-            $.ajax({
-                url: '/essay/refuse',
-                data: {
-                    essayId: id,
-                    remark: text
-                },
-                type: 'post',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        layer.close(index);
-                        layer.msg('已打回<br>提交意见：' + text);
-                    } else {
-                        layer.close(index);
-                        layer.msglayer.msg(res.msg, {icon: 2});
-                    }
-                }
-            })
-
-        });
-    }
-
 </script>
 <script th:inline="none">
     /*数据查询*/
 
     $(function () {
-        getAllEssay();
+        // getAllEssay();
     })
 
     /*获取全部文章*/
-    function getAllEssay() {
+    function getAllEssay(hospitalId, deptId) {
         layui.use('table',
             function () {
                 var table = layui.table;
                 table.render({
                     id: "checkboxTable",
-                    url: '/essay/getEssayByState?state=0',
+                    url: '/hospital/findAllDoctor?hospitalId=' + hospitalId + '&deptId=' + deptId,
                     elem: '#LAY_table_user',
                     page: true,
                     cols: [[
                         {checkbox: true},
                         {field: 'id', title: 'ID', width: 80},
-                        {field: 'title', title: '标题', sort: true, width: 120},
-                        {field: 'type', width: 80, title: '类型', sort: true, templet: '<div>{{d.type.name}}</div>'},
-                        {field: 'user', width: 80, title: '作者', sort: true, templet: '<div>{{d.user.penName}}</div>'},
-                        {field: 'createTime', title: '创建时间', sort: true, width: 150},
-                        {field: 'updateTime', title: '最后一次更新时间', sort: true, width: 150},
-                        {field: 'publishTime', title: '发布时间', sort: true, width: 150},
+                        {field: 'name', title: '门诊名', sort: true, width: 120},
                         {
-                            field: 'state',
-                            title: '状态',
+                            field: 'hospital',
+                            title: '医院名',
                             sort: true,
                             width: 120,
-                            templet: '<div>{{d.state==0?"审核中":(d.state==1?"发布":(d.state==2?"打回":(d.state==3?"弃用":"未知")))}}</div>'
+                            templet: '<div>{{d.hospital.name}}</div>'
                         },
+                        {
+                            field: 'dept',
+                            title: '门诊名',
+                            sort: true,
+                            width: 120,
+                            templet: '<div>{{d.dept.name}}</div>'
+                        },
+                        {field: 'createTime', title: '创建时间', sort: true, width: 150},
                         {toolbar: '#barTeacher', title: '操作', width: 120}
-
                     ]]
                 })
 
@@ -277,20 +289,11 @@
 
 </script>
 <script type="text/html" id="barTeacher">
-    <a title="查看" onclick="xadmin.open('查看稿件','/essay/checkEssay?essayId={{d.id}}',800,600);" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6ac;</i>
+    <a title="编辑" onclick="xadmin.open('编辑','/hospital/toEditDoctor?doctorId={{d.id}}',800,600)" href="javascript:;">
+        <i class="layui-icon">&#xe642;</i>
     </a>
-    <#--<a title="下载"  onclick="down({{d.id}});" href="javascript:;">-->
-    <#--<i class="layui-icon iconfont">&#xe714;</i>-->
-    <#--</a>-->
-    <#--<a title="移除" onclick="member_del(this,{{d.id}})" href="javascript:;">-->
-    <#--<i class="layui-icon">&#xe640;</i>-->
-    <#--</a>-->
-    <a title="通过" onclick="pass({{d.id}})" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6ad;</i>
-    </a>
-    <a title="打回" onclick="refuse({{d.id}})" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6b7;</i>
+    <a title="移除" onclick="member_del(this,{{d.id}})" href="javascript:;">
+        <i class="layui-icon">&#xe640;</i>
     </a>
 </script>
 

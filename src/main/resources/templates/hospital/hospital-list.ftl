@@ -63,6 +63,10 @@
                     </form>
                 </div>
                 <div class="layui-card-header">
+                    <button class="layui-btn layui-btn-danger" onclick="xadmin.open('新增','/page/addHospital',800,600)"
+                            href="javascript:;">
+                        <i class="layui-icon iconfont">&#xe6b9;</i>新增医院
+                    </button>
                     <button class="layui-btn layui-btn-danger" onclick="delAll()">
                         <i class="layui-icon"></i>批量删除
                     </button>
@@ -104,15 +108,14 @@
 </script>
 <script>
     /*操作数据*/
-
-    /*用户-弃用*/
+    /*类型-删除*/
     function member_del(obj, id) {
         var arr = [];
         arr.push(id);
-        layer.confirm('确认要弃用吗？', function (index) {
+        layer.confirm('确认要永久删除吗？', function (index) {
             //发异步删除数据
             $.ajax({
-                url: '/essay/disuse',
+                url: '/hospital/deleteHospital',
                 data: JSON.stringify(arr),
                 type: 'post',
                 dataType: 'json',
@@ -120,7 +123,7 @@
                 success: function (res) {
                     if (res.success) {
                         $(obj).parents("tr").remove();
-                        layer.msg('已弃用!', {icon: 1, time: 1000});
+                        layer.msg('已删除!', {icon: 1, time: 1000});
                     } else {
                         layer.msg(res.msg, {icon: 2, time: 1000});
                     }
@@ -142,7 +145,7 @@
             function () {
                 //捉到所有被选中的，发异步进行删除
                 $.ajax({
-                    url: '/essay/delete',
+                    url: '/hospital/deleteHospital',
                     data: JSON.stringify(ids),
                     dataType: 'json',
                     type: 'post',
@@ -166,72 +169,6 @@
             });
     }
 
-    //通过
-    function pass(id) {
-        layer.confirm('确认通过嘛？', {
-            btn: ['确认', '取消'] //按钮
-        }, function () {
-            $.ajax({
-                url: '/essay/setState',
-                data: {
-                    essayId: id,
-                    state: 1
-                },
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        layer.msg('审核通过，稿件已发布', {icon: 1});
-                        xadmin.father_reload();
-                    } else {
-                        layer.msg(res.msg, {icon: 2});
-                    }
-
-                }
-            })
-
-        }, function () {
-
-        });
-    }
-
-    function disuse(id) {
-        //prompt层
-        layer.prompt({title: '弃用原因', formType: 2}, function (text, index) {
-            $.ajax({
-                url: '/essay/disuse',
-                data: {
-                    essayId: id,
-                    remark: text
-                },
-                type: 'post',
-                dataType: 'json',
-                success: function (res) {
-                    if (res.success) {
-                        layer.close(index);
-                        layer.msg('已弃用<br>原因：' + text);
-                    } else {
-                        layer.close(index);
-                        layer.msglayer.msg(res.msg, {icon: 2});
-                    }
-                }
-            })
-
-        });
-    }
-
-    function push(id) {
-        //prompt层
-        layer.prompt({title: '推送简介', formType: 2}, function (text, index) {
-            var data = {
-                essayId: id,
-                text: text
-            }
-            send(JSON.stringify(data));
-            layer.close(index);
-            layer.msg('已推送');
-        });
-    }
-
 </script>
 <script th:inline="none">
     /*数据查询*/
@@ -247,27 +184,15 @@
                 var table = layui.table;
                 table.render({
                     id: "checkboxTable",
-                    url: '/essay/getEssayByState?state=1',
+                    url: '/hospital/findAllHospital',
                     elem: '#LAY_table_user',
                     page: true,
                     cols: [[
                         {checkbox: true},
                         {field: 'id', title: 'ID', width: 80},
-                        {field: 'title', title: '标题', sort: true, width: 120},
-                        {field: 'type', width: 80, title: '类型', sort: true, templet: '<div>{{d.type.name}}</div>'},
-                        {field: 'user', width: 80, title: '作者', sort: true, templet: '<div>{{d.user.penName}}</div>'},
+                        {field: 'name', title: '医院名', sort: true, width: 120},
                         {field: 'createTime', title: '创建时间', sort: true, width: 150},
-                        {field: 'updateTime', title: '最后一次更新时间', sort: true, width: 150},
-                        {field: 'publishTime', title: '发布时间', sort: true, width: 150},
-                        {
-                            field: 'state',
-                            title: '状态',
-                            sort: true,
-                            width: 120,
-                            templet: '<div>{{d.state==0?"审核中":(d.state==1?"发布":(d.state==2?"打回":(d.state==3?"弃用":"未知")))}}</div>'
-                        },
                         {toolbar: '#barTeacher', title: '操作', width: 120}
-
                     ]]
                 })
 
@@ -289,46 +214,11 @@
     }
 
 </script>
-
-<script type="text/javascript">
-    var websocket = null;
-
-    //判断当前浏览器是否支持WebSocket, 主要此处要更换为自己的地址
-    if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8084/websocket/oneToMany");
-    } else {
-        alert('Not support websocket')
-    }
-
-    //连接成功建立的回调方法
-    websocket.onopen = function (event) {
-        //setMessageInnerHTML("open");
-    }
-
-    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-    window.onbeforeunload = function () {
-        websocket.close();
-    }
-
-    //关闭连接
-    function closeWebSocket() {
-        websocket.close();
-    }
-
-    //发送消息
-    function send(data) {
-        websocket.send(data);
-    }
-</script>
-
 <script type="text/html" id="barTeacher">
-    <a title="查看" onclick="xadmin.open('查看稿件','/essay/checkEssay?essayId={{d.id}}',800,600);" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe6ac;</i>
+    <a title="编辑" onclick="xadmin.open('编辑','/hospital/toEditHospital?hospitalId={{d.id}}',800,600)" href="javascript:;">
+        <i class="layui-icon">&#xe642;</i>
     </a>
-    <a title="推送" onclick="push({{d.id}});" href="javascript:;">
-        <i class="layui-icon iconfont">&#xe756;</i>
-    </a>
-    <a title="弃用" onclick="disuse({{d.id}})" href="javascript:;">
+    <a title="移除" onclick="member_del(this,{{d.id}})" href="javascript:;">
         <i class="layui-icon">&#xe640;</i>
     </a>
 </script>

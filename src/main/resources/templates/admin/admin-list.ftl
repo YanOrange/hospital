@@ -246,8 +246,6 @@
                         {field: 'age', width: 80, title: '年龄', sort: true},
                         {field: 'phone', title: '联系方式', sort: true, width: 150},
                         {field: 'idCard', title: '身份证', sort: true, width: 150},
-                        {field: 'address', title: '地址', sort: true, width: 150},
-                        {field: 'email', title: '电子邮箱', sort: true, width: 120},
                         {toolbar: '#barTeacher', title: '操作', width: 120}
 
                     ]]

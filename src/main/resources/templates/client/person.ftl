@@ -52,7 +52,7 @@
     <header class="global-header">
         <div class="center-area" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">个人中心</div>
     </header>
-    <div onclick="location.href='/page/myFav'" style="margin-top: 1rem;width:100%;test-align:center;">我的收藏</div>
+    <div onclick="location.href='/page/myOrder'" style="margin-top: 1rem;width: 100%;text-align: center;border: 1px solid #000;padding: 0.1rem 0;box-sizing: border-box;">预约单</div>
 </div>
 </body>
 <script type="text/javascript" src="../js/jquery.js"></script>

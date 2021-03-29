@@ -204,7 +204,14 @@ public class PageController extends BaseController{
         return "doctor/doctor-add";
     }
 
-
+    /**
+     * 我的订单
+     * @return
+     */
+    @RequestMapping("myOrder")
+    public String myOrder(){
+        return "client/order-list";
+    }
 
 
 

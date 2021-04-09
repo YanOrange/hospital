@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="../css/common.css">
     <style>
         .content {
-            margin-top: 0.88rem;
-            padding: 0 1rem;
+            margin-top: 1.18rem;
+            padding: 0 0.4rem;
         }
 
         .newsClass {

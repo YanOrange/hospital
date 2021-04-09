@@ -17,15 +17,33 @@
     <link rel="stylesheet" href="../css/common.css">
     <style>
         .content {
-            margin-top: 0.88rem;
-            padding:0 1rem;
+            padding: 0.3rem 0.2rem;
         }
 
-        .content div{
-            padding:0.1rem 0;
+        .content .content-title {
+            padding: 0.25rem 0;
+            display: flex;
+            color: #8e8e8e;
+            height: 0.4rem;
+            line-height: 0.4rem;
         }
-        .content input{
-            border:1px solid #D0D0D0;
+
+        .content .content-value {
+            margin-left: 1rem;
+            color: #333;
+        }
+
+        .content input {
+            border: 1px solid #D0D0D0;
+            background: none;
+            padding: 0 0.4rem;
+            height: 0.5rem;
+            border-radius: 0.2rem;
+            width: 2.5rem;
+        }
+
+        .content-title-name {
+            width: 1.5rem;
         }
 
         .newsClass {
@@ -46,26 +64,63 @@
         .bottom {
             display: flex;
             justify-content: space-between;
-            position: fixed;
-            bottom: 0;
+            position: relative;
+            bottom: 0.4rem;
             width: 100%;
             height: 1rem;
             line-height: 1rem;
-            border: 1px solid #efefef;
         }
 
         .bottom .tab {
             text-align: center;
             width: 100%;
         }
+        .bottom .tab span{
+            display: inline-block;
+            background: #4b80ff;
+            width: 6rem;
+            height:0.8rem;
+            color:#fff;
+            border-radius: 0.5rem;
+            line-height: 0.8rem;
+        }
 
-        .search-box{
+        .search-box {
             text-align: center;
             margin-top: 1rem;
         }
-        .search-box input{
-            border:1px solid #c1c1c1;
+
+        .search-box input {
+            border: 1px solid #c1c1c1;
         }
+
+        .info-title {
+            background: #f6f6f6;
+            height: 0.8rem;
+            line-height: 0.8rem;
+            margin-top: 0.9rem;
+
+        }
+
+        .info-title .title-name {
+            margin-left: 0.3rem;
+            font-weight: bolder;
+            color: #525252;
+
+        }
+        .des{
+            color:#8e8e8e;
+            font-size: 0.22rem;
+            margin-top: 0.35rem;
+        }
+        .rule{
+            white-space: pre-wrap;
+            padding:0.3rem;
+            line-height: 18px;
+            padding-bottom:1rem;
+            color:#656565;
+        }
+
     </style>
 </head>
 <body>
@@ -73,12 +128,43 @@
     <header class="global-header">
         <div class="center-area">医院预约挂号</div>
     </header>
+    <div class="info-title">
+        <span class="title-name">挂号信息</span>
+    </div>
     <div class="content">
-        <div>预约医院:<span id="hospitalName"></span></div>
-        <div>预约门诊:<span id="deptName"></span></div>
-        <div>预约专家:<span id="doctorName"></span></div>
-        <div>预约时间:<input type="date" id="date"></div>
-        <div>预留手机号:<input type="text" id="phone"></div>
+        <div class="content-title">
+            <div class="content-title-name">预约医院</div>
+            <div class="content-value" id="hospitalName"></div>
+        </div>
+        <div class="content-title">
+            <div class="content-title-name">预约门诊</div>
+            <div class="content-value" id="deptName"></div>
+        </div>
+        <div class="content-title">
+            <div class="content-title-name">预约专家</div>
+            <div class="content-value" id="doctorName"></div>
+        </div>
+        <div class="content-title">
+            <div class="content-title-name">预约时间</div>
+            <div class="content-value"><input type="date" id="date"></div>
+        </div>
+        <div class="content-title">
+            <div class="content-title-name">预留手机号</div>
+            <div class="content-value"><input placeholder="请输入预留手机号" type="text" id="phone"></div>
+        </div>
+        <div class="des">具体费用以取号当天医院收取为准，对您造成的不便敬请谅解</div>
+    </div>
+    <div class="info-title">
+        <span class="title-name">医院预约规则</span>
+    </div>
+    <div class="rule">1：受疫情影响，来自或去过中/高地区的患者就诊须持7日内正规机构核酸检测阴性结果证明，否则将不能正常就诊，请主动配合入口处管理和预检分诊。
+2：为减少院内聚集，避免交叉感染风险，每位患者仅允许一位家属陪同。
+3. 首次预约患者,预约时必须填写“亲属姓名”用于建档备查，首次填写后无需再填写。
+4. 预约成功的医保报销用户请首先确保为本院定点医保用户，首次来院就诊时需到窗口关联医保卡后，再到医院医保自助机取号就诊。预约成功的自费用户请在非医保自助机取号就医。
+5. 使用身份证以外其它证件注册预约的患者，只能到窗口取号。
+6. 本院【小儿科】只预约小于14周岁(不包含14周岁)的患儿。
+7. 预约成功后，请患者于就诊当日携带患者本人的有效证件、银行卡、医保卡、及预约识别码到医院自助挂号机上进行取号（医保报销用户须在医保自助机取号，在非医保自助机取号为自费），如预约登记信息有误，则无法正常取号就诊。
+8. 本院【口腔科】下的小儿牙科只对12周岁以下患儿预约。
     </div>
     <div class="bottom">
         <div class="tab">
@@ -99,8 +185,8 @@
         var doctorId = $('#doctorId').val();
         $.ajax({
             url: '/hospital/getInfoByDoctorId',
-            data:{
-                doctorId:doctorId
+            data: {
+                doctorId: doctorId
             },
             dataType: 'json',
             success: function (res) {
@@ -116,32 +202,32 @@
         })
     }
 
-    $('#sub-btn').on('click',function(){
+    $('#sub-btn').on('click', function () {
         var doctorId = $('#doctorId').val();
         var date = $('#date').val();
         var phone = $('#phone').val();
-        if(!(doctorId&&date&&phone)){
+        if (!(doctorId && date && phone)) {
             alert("请完善参数");
             return false;
         }
         $.ajax({
-            url:'/order/createOrder',
-            data:{
-                doctorId:doctorId,
-                date:date,
-                phone:phone
+            url: '/order/createOrder',
+            data: {
+                doctorId: doctorId,
+                date: date,
+                phone: phone
             },
-            dataType:'json',
-            success:function(res){
-                if(res.success){
-                    if(res.data.status==1){
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    if (res.data.status == 1) {
                         alert("预约成功，请在预约单中查看详情")
-                        location.href="/page/clientPerson";
-                    }else if(res.data.status==2){
+                        location.href = "/page/clientPerson";
+                    } else if (res.data.status == 2) {
                         alert("预约失败，请在预约单中查看详情")
-                        location.href="/page/clientPerson";
+                        location.href = "/page/clientPerson";
                     }
-                }else{
+                } else {
                     alert(res.msg)
                 }
             }

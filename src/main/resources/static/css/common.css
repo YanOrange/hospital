@@ -631,7 +631,8 @@ input[type="radio"]:checked:after, input[type="checkbox"]:checked:after {
     z-index: 100;
     height: .88rem;
     line-height: .88rem;
-    background: #fff
+    background: #9cc0ff;
+    color:#fff;
 }
 
 .global-header .left-area, .global-header .right-area {

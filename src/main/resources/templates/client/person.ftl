@@ -52,7 +52,7 @@
     <header class="global-header">
         <div class="center-area" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">个人中心</div>
     </header>
-    <div onclick="location.href='/page/myOrder'" style="margin-top: 1rem;width: 100%;text-align: center;border: 1px solid #000;padding: 0.1rem 0;box-sizing: border-box;">预约单</div>
+    <div onclick="location.href='/page/myOrder'" style="margin-top: 1rem;width: 100%;text-align: center;padding: 0.5rem 0;box-sizing: border-box;"><span style="background: #4b80ff;display: inline-block;width:6rem;height:0.8rem;color:#fff;line-height: 0.8rem;border-radius: 1rem">预约单</span></div>
 </div>
 </body>
 <script type="text/javascript" src="../js/jquery.js"></script>

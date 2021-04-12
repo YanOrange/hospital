@@ -51,6 +51,21 @@ public class HospitalController {
     }
 
     /**
+     * 查找医院通过诊室id
+     * @return
+     */
+    @RequestMapping("findHospitalByDeptId")
+    @ResponseBody
+    public ExecuteResult findHospitalByDeptId(Integer deptId){
+        Dept dept = deptService.findById(deptId).orElse(null);
+        Hospital hospital = dept.getHospital();
+        JSONObject json = new JSONObject();
+        json.put("hospital",hospital);
+        json.put("dept",dept);
+        return ExecuteResult.ok(json);
+    }
+
+    /**
      * 查看全部医院通过name
      * @return
      */

@@ -198,8 +198,8 @@
         <div class="center-area">医院预约挂号</div>
     </header>
     <div class="top-title">
-        <div class="title-des"><span>中国人民解放军总医院（301医院）</span><span>其他</span></div>
-        <div class="title-name">免疫学</div>
+        <div class="title-des"><span id="hospitalName">中国人民解放军总医院（301医院）</span><span>其他</span></div>
+        <div class="title-name" id="deptName">免疫学</div>
 
     </div>
     <div class="back-nav" style="margin-top: 0.1rem;padding-top: 0.4rem;">
@@ -241,6 +241,26 @@
     $(function () {
         initHospital();
     })
+
+    function initH(){
+        var deptId = $('#deptId').val();
+        $.ajax({
+            url: '/hospital/findHospitalByDeptId',
+            data:{
+                deptId:deptId
+            },
+            dataType: 'json',
+            success: function (res) {
+                if (res.success) {
+                    var data = res.data;
+                    $('#hospitalName').html(data.hospital.name);
+                    $('#deptName').html(data.dept.name);
+                } else {
+                    alert(res.msg)
+                }
+            }
+        })
+    }
 
     function initHospital() {
         var hospitalId = $('#hospitalId').val();
